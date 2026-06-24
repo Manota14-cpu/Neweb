@@ -211,17 +211,9 @@ export default function Hero() {
         </motion.div>
 
         <motion.h1 className="font-heading text-6xl sm:text-7xl md:text-[9rem] lg:text-[11rem] font-bold leading-[0.85] mb-6 tracking-tight" variants={fadeInUp}>
-          <span className="text-cosmos">
-            <LetterReveal text={t('hero.heading.line1')} />
+          <span className="text-white">
+            <LetterReveal text="Explore the Solar System" />
           </span>
-          <br />
-          <span className="text-cosmos-reverse">{t('hero.heading.line2')}</span>
-          <br />
-          <span className="text-white">{t('hero.heading.line3')}</span>
-          <br />
-          <span className="text-cosmos-reverse">{t('hero.heading.line2')}</span>
-          <br />
-          <span className="text-white">{t('hero.heading.line3')}</span>
         </motion.h1>
 
         <motion.p

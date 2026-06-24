@@ -89,7 +89,7 @@ export default function DeepSpace() {
         </motion.div>
 
         <motion.h2 className="font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-8" variants={fadeInUp}>
-          <span className="text-cosmos-reverse">{t('deepspace.space')}</span>
+          <span className="text-white">{t('deepspace.space')}</span>
           <br />
           <span className="text-white">{t('deepspace.neverEnds')}</span>
         </motion.h2>
