@@ -55,14 +55,7 @@ export default function Footer() {
                 }
               }}
             >
-              <div
-                className="w-5 h-5 rounded-full transition-all duration-700"
-                style={{
-                  background: 'radial-gradient(circle at 40% 35%, #4DA3FF, #7F5CFF)',
-                  boxShadow: logoClicks >= 2 ? '0 0 40px rgba(255,200,100,0.8), 0 0 80px rgba(255,100,50,0.4)' : '0 0 12px rgba(77,163,255,0.2)',
-                }}
-              />
-              <span className="font-heading text-xs font-semibold tracking-[0.25em] text-white">COSMOS</span>
+              <img src="/logo.png" alt="BWL Studios" className="h-5 w-auto" />
             </div>
             <div className="mt-4">
               <SocialIcons horizontal />

@@ -13,19 +13,6 @@ const links = [
   { key: 'nav.data' as const, href: '#data', id: 'data' },
 ]
 
-function GalaxyLogo() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="2.5" fill="#3B82F6" opacity={0.9} />
-      <ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="#8B5CF6" strokeWidth="0.6" opacity={0.35} transform="rotate(-30 12 12)" />
-      <ellipse cx="12" cy="12" rx="7" ry="2.5" stroke="#3B82F6" strokeWidth="0.5" opacity={0.25} transform="rotate(20 12 12)" />
-      <circle cx="5" cy="10" r="0.7" fill="white" opacity={0.4} />
-      <circle cx="19" cy="14" r="0.5" fill="white" opacity={0.3} />
-      <circle cx="14" cy="5" r="0.4" fill="white" opacity={0.3} />
-    </svg>
-  )
-}
-
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -71,12 +58,7 @@ export default function Navbar() {
       >
         <div className="flex items-center justify-between h-12 md:h-14 px-4 md:px-6">
           <a href="#hero" className="flex items-center gap-2 group">
-            <div className="transition-all duration-500 group-hover:opacity-100" style={{ opacity: 0.8 }}>
-              <GalaxyLogo />
-            </div>
-            <span className="font-heading text-[10px] font-semibold tracking-[0.3em] text-white hidden sm:block">
-              COSMOS
-            </span>
+            <img src="/logo.png" alt="BWL Studios" className="h-7 w-auto" />
           </a>
 
           <div className="hidden md:flex items-center gap-0.5">
