@@ -107,10 +107,7 @@ export default function Footer() {
         </div>
 
         <motion.div className="mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" variants={fadeInUp} style={{ borderTop: '1px solid rgba(199,215,255,0.03)' }}>
-          <p className="text-[10px] font-body text-white">&copy; {new Date().getFullYear()} COSMOS. {t('footer.tagline')}</p>
-          <p className="text-[10px] font-body text-white">
-            {t('footer.since')}
-          </p>
+          <p className="text-[10px] font-body text-white">&copy; 2026 BWL Studios Copyright</p>
         </motion.div>
       </div>
     </motion.footer>
