@@ -14,7 +14,7 @@ const icons: SocialIcon[] = [
   {
     id: 'web',
     label: 'Website',
-    href: 'https://manota14-cpu.github.io/BWL/#about',
+    href: '#hero',
     color: '#2563EB',
     hoverBg: 'linear-gradient(135deg, #2563EB, #06B6D4)',
     renderIcon: (fill) => (

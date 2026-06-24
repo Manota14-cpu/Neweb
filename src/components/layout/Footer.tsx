@@ -55,7 +55,7 @@ export default function Footer() {
                 }
               }}
             >
-              <img src="/logo.png" alt="BWL Studios" className="h-5 w-auto" />
+              <img src="/logo.png" alt="BWL Studios" className="h-10 w-auto" />
             </div>
             <div className="mt-4">
               <SocialIcons horizontal />
