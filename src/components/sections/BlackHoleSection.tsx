@@ -32,7 +32,7 @@ export default function BlackHoleSection() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.img
           ref={imgRef}
-          src="https://images-assets.nasa.gov/image/black-hole-M87/black-hole-M87~medium.jpg"
+          src="/black-hole.jpg"
           alt="M87* supermassive black hole"
           className="absolute w-[70vmin] h-[70vmin] object-cover rounded-full opacity-[0.12]"
           style={{ filter: 'blur(2px) brightness(0.5) saturate(0.3)' }}
