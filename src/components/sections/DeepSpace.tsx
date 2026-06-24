@@ -102,15 +102,15 @@ export default function DeepSpace() {
           <MagneticButton
             className="text-white"
             style={{
-              background: 'linear-gradient(135deg, rgba(77,163,255,0.12), rgba(127,92,255,0.12))',
-              border: '1px solid rgba(199,215,255,0.08)',
+              background: '#000000',
+              border: '1px solid rgba(255,255,255,0.15)',
             }}
             href="#hero"
           >
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 text-white">
               {t('deepspace.rebegin')}
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 3v10M3 8l5-5 5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M8 3v10M3 8l5-5 5 5" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
           </MagneticButton>

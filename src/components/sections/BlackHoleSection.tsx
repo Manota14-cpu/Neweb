@@ -34,9 +34,9 @@ export default function BlackHoleSection() {
           ref={imgRef}
           src="/black-hole.jpg"
           alt="M87* supermassive black hole"
-          className="absolute w-[70vmin] h-[70vmin] object-cover rounded-full opacity-[0.12]"
-          style={{ filter: 'blur(2px) brightness(0.5) saturate(0.3)' }}
-          animate={{ scale: [1, 1.03, 1], opacity: [0.1, 0.14, 0.1] }}
+          className="absolute w-[70vmin] h-[70vmin] object-cover rounded-full"
+          style={{ filter: 'blur(2px) saturate(0.6)' }}
+          animate={{ scale: [1, 1.04, 1], opacity: [0.35, 0.5, 0.35] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
