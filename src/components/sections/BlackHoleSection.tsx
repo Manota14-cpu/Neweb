@@ -10,14 +10,17 @@ export default function BlackHoleSection() {
   const { t } = useLanguage()
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.2 })
   const bhRef = useRef<HTMLDivElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
 
   useEffect(() => {
     const el = bhRef.current
-    if (!el) return
+    const img = imgRef.current
+    if (!el || !img) return
     let animId: number
     const tick = () => {
       const m = getSharedMouse()
       el.style.transform = `translate(${m.normalizedX * -15}px, ${m.normalizedY * -15}px)`
+      img.style.transform = `translate(${m.normalizedX * 5}px, ${m.normalizedY * 5}px)`
       animId = requestAnimationFrame(tick)
     }
     animId = requestAnimationFrame(tick)
@@ -26,6 +29,17 @@ export default function BlackHoleSection() {
 
   return (
     <motion.section id="black-hole" className="relative min-h-screen py-16 md:py-20 overflow-hidden flex items-center">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <motion.img
+          ref={imgRef}
+          src="https://images-assets.nasa.gov/image/black-hole-M87/black-hole-M87~medium.jpg"
+          alt="M87* supermassive black hole"
+          className="absolute w-[70vmin] h-[70vmin] object-cover rounded-full opacity-[0.12]"
+          style={{ filter: 'blur(2px) brightness(0.5) saturate(0.3)' }}
+          animate={{ scale: [1, 1.03, 1], opacity: [0.1, 0.14, 0.1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
           ref={bhRef}

@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion'
-import { spaceMetrics } from '@/data/universe'
 import { planets } from '@/data/planets'
 import { staggerContainer } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 
-function MetricTile({ metric, index }: { metric: typeof spaceMetrics[0]; index: number }) {
+const metricIds = Array.from({ length: 9 }, (_, i) => i)
+
+function MetricTile({ id, index }: { id: number; index: number }) {
+  const { t } = useLanguage()
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 })
 
   return (
@@ -16,8 +18,8 @@ function MetricTile({ metric, index }: { metric: typeof spaceMetrics[0]; index: 
       animate={isVisible ? { opacity: 1, y: 0 } : {}}
       transition={{ delay: index * 0.04, duration: 0.4, ease: [0.16,1,0.3,1] }}
     >
-      <p className="text-[8px] tracking-wider uppercase font-body text-white/40">{metric.label}</p>
-      <p className="font-heading text-base md:text-lg font-bold text-white leading-tight">{metric.value}</p>
+      <p className="text-[8px] tracking-wider uppercase font-body text-white/40">{t(`data.metric.${id}.label`)}</p>
+      <p className="font-heading text-base md:text-lg font-bold text-white leading-tight">{t(`data.metric.${id}.value`)}</p>
     </motion.div>
   )
 }
@@ -81,7 +83,7 @@ export default function SpaceDashboard() {
           initial="hidden"
           animate="visible"
         >
-          {spaceMetrics.map((m, i) => <MetricTile key={m.label} metric={m} index={i} />)}
+          {metricIds.map((id, i) => <MetricTile key={id} id={id} index={i} />)}
         </motion.div>
 
         <ScaleComparison />
