@@ -57,15 +57,15 @@ function ComparisonTab({ planet }: { planet: PlanetData }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-      <p className="text-[10px] uppercase tracking-wider font-body mb-3 text-white/40">{t('planetDetail.comparison.title')}</p>
-      <div className="flex items-center justify-center gap-6 pb-3 mb-4 border-b border-white/5">
+      <p className="text-[10px] uppercase tracking-wider font-body mb-4 text-white/40">{t('planetDetail.comparison.title')}</p>
+      <div className="flex items-center justify-center gap-8 pb-4 mb-5 border-b border-white/5">
         <div className="text-center">
           <div className="mx-auto rounded-full" style={{
             width: pSize, height: pSize,
             background: `radial-gradient(circle at 35% 35%, ${planet.color}, ${planet.color}88)`,
             boxShadow: `0 0 24px ${planet.color}22`,
           }} />
-          <p className="text-xs font-bold text-white mt-1">{planet.name}</p>
+          <p className="text-xs font-bold text-white mt-2">{planet.name}</p>
         </div>
         <span className="text-[10px] font-bold text-white/20">VS</span>
         <div className="text-center">
@@ -73,31 +73,31 @@ function ComparisonTab({ planet }: { planet: PlanetData }) {
             width: 18, height: 18,
             background: 'radial-gradient(circle at 35% 35%, #4B7BE5, #1A3A7C)',
           }} />
-          <p className="text-[10px] font-bold text-white mt-1">Earth</p>
+          <p className="text-[10px] font-bold text-white mt-2">Earth</p>
         </div>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {items.map((item) => {
           const v = vals[item.key]
           const e = earth[item.key]
           const max = Math.max(v, e.val)
           return (
-            <div key={item.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-2.5">
-              <div className="text-[8px] font-body text-white/40 tracking-widest uppercase mb-1.5">{item.label}</div>
-              <div className="flex items-center justify-between gap-2 mb-1.5">
+            <div key={item.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-3">
+              <div className="text-[9px] font-body text-white/40 tracking-widest uppercase mb-2">{item.label}</div>
+              <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-1.5 text-left min-w-0">
                   <div className="w-1.5 h-1.5 rounded-full bg-white/30 shrink-0" />
-                  <span className="text-[10px] text-white/60 truncate">Earth</span>
-                  <span className="text-[10px] font-bold text-white/80">{e.val.toLocaleString()} {e.unit}</span>
+                  <span className="text-xs text-white/60 truncate">Earth</span>
+                  <span className="text-xs font-bold text-white/80">{e.val.toLocaleString()} {e.unit}</span>
                 </div>
-                <span className="text-sm font-bold shrink-0" style={{ color: planet.color }}>{ratio(v, e.val)}</span>
+                <span className="text-base font-bold shrink-0" style={{ color: planet.color }}>{ratio(v, e.val)}</span>
                 <div className="flex items-center gap-1.5 text-right min-w-0">
-                  <span className="text-[10px] font-bold truncate" style={{ color: planet.color }}>{v.toLocaleString()} {e.unit}</span>
-                  <span className="text-[10px] text-white/60 truncate">{planet.name}</span>
+                  <span className="text-xs font-bold truncate" style={{ color: planet.color }}>{v.toLocaleString()} {e.unit}</span>
+                  <span className="text-xs text-white/60 truncate">{planet.name}</span>
                   <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: planet.color }} />
                 </div>
               </div>
-              <div className="relative h-1 rounded-full bg-white/5 overflow-hidden">
+              <div className="relative h-1.5 rounded-full bg-white/5 overflow-hidden">
                 <div className="absolute inset-y-0 rounded-full bg-white/10" style={{ width: `${(e.val / max) * 100}%`, left: 0 }} />
                 <motion.div
                   className="absolute inset-y-0 rounded-full"
@@ -119,7 +119,7 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
   const { t } = useLanguage()
   if (!planet.mainMoons || planet.mainMoons.length === 0) {
     return (
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-6 text-center">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-8 text-center">
         <p className="text-sm font-body text-white/50">{t('planetDetail.moons.none')}</p>
       </motion.div>
     )
@@ -127,8 +127,8 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-      <p className="text-[10px] uppercase tracking-wider font-body mb-3 text-white/50">{t('planetDetail.moons.title')}</p>
-      <div className="relative flex items-center justify-center py-6">
+      <p className="text-[10px] uppercase tracking-wider font-body mb-4 text-white/50">{t('planetDetail.moons.title')}</p>
+      <div className="relative flex items-center justify-center py-8">
         <PlanetSVG planetId={planet.id} size={60} animate={false} />
         {planet.mainMoons.map((moon, i) => {
           const dist = 60 + i * 24
@@ -153,12 +153,12 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
           )
         })}
       </div>
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         {planet.mainMoons.map((moon) => (
-          <div key={moon.name} className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+          <div key={moon.name} className="flex items-center justify-between px-4 py-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
             <div>
               <p className="text-sm text-white font-body">{moon.name}</p>
-              <p className="text-[10px] font-body text-white/50">{moon.note}</p>
+              <p className="text-[10px] font-body text-white/50 mt-0.5">{moon.note}</p>
             </div>
             <span className="text-[10px] font-body text-white/60">{moon.diameter}</span>
           </div>
@@ -174,13 +174,12 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
-  const previousActive = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     triggerRef.current = document.activeElement as HTMLElement
     const style = document.createElement('style')
     style.id = 'planet-detail-lock'
-    style.textContent = 'body, html { overflow: hidden !important; }'
+    style.textContent = 'html, body { overflow: hidden !important; position: fixed !important; width: 100% !important; height: 100% !important; }'
     document.head.appendChild(style)
     requestAnimationFrame(() => closeBtnRef.current?.focus())
     return () => {
@@ -217,7 +216,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6"
+        className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 sm:p-8 overflow-y-auto"
         variants={overlayVariants}
         initial="hidden"
         animate="visible"
@@ -226,7 +225,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
       >
         <motion.div
           className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.65)' }}
+          style={{ background: 'rgba(0,0,0,0.7)' }}
           onClick={onClose}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClose() } }}
           role="button" tabIndex={-1} aria-label="Close"
@@ -237,7 +236,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="planet-detail-title"
-          className="relative w-full max-w-[640px] max-h-[90vh] overflow-y-auto rounded-2xl border border-white/[0.06]"
+          className="relative w-full max-w-[640px] max-h-[90vh] overflow-y-auto rounded-2xl border border-white/[0.06] shadow-2xl mt-8 sm:mt-0"
           style={{ background: '#0A0A0A' }}
           variants={modalVariants}
           initial="hidden"
@@ -247,17 +246,17 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
           onKeyDown={handleKeyDown}
         >
           <div
-            className="absolute top-0 left-4 right-4 h-0.5 rounded-full"
-            style={{ background: `linear-gradient(90deg, ${planet.color}, ${planet.color}44, transparent)` }}
+            className="absolute top-0 left-0 right-0 h-0.5"
+            style={{ background: `linear-gradient(90deg, ${planet.color}, ${planet.color}66, transparent)` }}
           />
 
-          <div className="p-5 sm:p-8">
-            <div className="flex items-start justify-between mb-4">
+          <div className="p-6 sm:p-8">
+            <div className="flex items-start justify-between mb-6">
               <div className="flex-1 min-w-0 pr-4">
-                <h2 id="planet-detail-title" className="font-heading text-2xl sm:text-3xl font-bold text-white truncate">
+                <h2 id="planet-detail-title" className="font-heading text-3xl sm:text-4xl font-bold text-white">
                   {planet.name}
                 </h2>
-                <p className="text-xs sm:text-sm text-white/40 italic font-body mt-0.5">{planet.nameLatin}</p>
+                <p className="text-sm sm:text-base text-white/40 italic font-body mt-1">{planet.nameLatin}</p>
               </div>
               <button
                 ref={closeBtnRef}
@@ -271,7 +270,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
               </button>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-5 mb-5">
+            <div className="flex flex-col sm:flex-row gap-6 mb-6">
               <div className="relative flex items-center justify-center w-full sm:w-[180px] h-[180px] shrink-0 mx-auto sm:mx-0">
                 <div className="w-full h-full">
                   <Planet3D planetId={planet.id} size={180} />
@@ -287,32 +286,33 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                 />
               </div>
 
-              <div className="flex-1 min-w-0">
-                <p className="text-sm leading-relaxed font-body text-white/80 line-clamp-4">
-                  {t(`planet.${planet.id}.description`)}
-                </p>
-
-                <div className="flex gap-2 mt-2">
-                  <button
-                    onClick={() => { if (typeof navigator !== 'undefined' && navigator.clipboard) navigator.clipboard.writeText(planet.name).catch(() => {}) }}
-                    className="px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body transition-colors bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-white/70"
-                  >
-                    {t('planetDetail.share')}
-                  </button>
-                  <button
-                    className="px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body bg-white/[0.02] border border-white/[0.04] text-white/40 cursor-default"
-                    title={t('planetDetail.comingSoon')}
-                  >
-                    {t('planetDetail.view3d')}
-                  </button>
+              <div className="flex-1 min-w-0 flex flex-col justify-between">
+                <div>
+                  <p className="text-sm leading-relaxed font-body text-white/80">
+                    {t(`planet.${planet.id}.description`)}
+                  </p>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      onClick={() => { if (typeof navigator !== 'undefined' && navigator.clipboard) navigator.clipboard.writeText(planet.name).catch(() => {}) }}
+                      className="px-4 py-2 rounded-lg text-[9px] tracking-wider uppercase font-body transition-colors bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-white/70"
+                    >
+                      {t('planetDetail.share')}
+                    </button>
+                    <button
+                      className="px-4 py-2 rounded-lg text-[9px] tracking-wider uppercase font-body bg-white/[0.02] border border-white/[0.04] text-white/40 cursor-default"
+                      title={t('planetDetail.comingSoon')}
+                    >
+                      {t('planetDetail.view3d')}
+                    </button>
+                  </div>
                 </div>
 
-                <div className="flex gap-1.5 mt-3 border-b border-white/[0.06] pb-2">
+                <div className="flex gap-2 mt-4 border-b border-white/[0.06] pb-3">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body transition-all ${
+                      className={`px-4 py-2 rounded-lg text-[10px] tracking-wider uppercase font-body transition-all ${
                         activeTab === tab.id
                           ? 'bg-white/[0.08] text-white'
                           : 'bg-transparent text-white/40 hover:text-white/70'
@@ -334,7 +334,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 gap-3">
                     {[
                       { label: t('planetDetail.stat.diameter'), value: planet.diameter },
                       { label: t('planetDetail.stat.distance'), value: planet.distanceFromSun },
@@ -347,33 +347,33 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                     ].map((s) => (
                       <div key={s.label} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
                         <p className="text-[9px] uppercase tracking-wider font-body text-white/40">{s.label}</p>
-                        <p className="text-xs text-white/90 mt-1 font-body font-medium">{s.value}</p>
+                        <p className="text-sm text-white/90 mt-1 font-body font-medium">{s.value}</p>
                       </div>
                     ))}
                   </div>
 
-                  <div className="mt-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                    <p className="text-[9px] uppercase tracking-wider font-body mb-1.5 text-white/50">{t('planetDetail.atmosphere')}</p>
-                    <p className="text-sm font-body text-white/80">{planet.atmosphere}</p>
+                  <div className="mt-5 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-2 text-white/50">{t('planetDetail.atmosphere')}</p>
+                    <p className="text-sm font-body text-white/80 leading-relaxed">{planet.atmosphere}</p>
                   </div>
 
-                  <div className="mt-3">
-                    <p className="text-[9px] uppercase tracking-wider font-body mb-2 text-white/50">{t('planetDetail.missions')}</p>
-                    <div className="flex flex-wrap gap-1.5">
+                  <div className="mt-5">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-3 text-white/50">{t('planetDetail.missions')}</p>
+                    <div className="flex flex-wrap gap-2">
                       {planet.missions.map((m) => (
-                        <span key={m} className="px-2.5 py-1 rounded-full text-[9px] font-body bg-white/[0.03] border border-white/[0.06] text-white/70">
+                        <span key={m} className="px-3 py-1.5 rounded-full text-[10px] font-body bg-white/[0.03] border border-white/[0.06] text-white/70">
                           {m}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="mt-3">
-                    <p className="text-[9px] uppercase tracking-wider font-body mb-2 text-white/50">{t('planetDetail.facts')}</p>
-                    <ul className="space-y-1.5">
+                  <div className="mt-5">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-3 text-white/50">{t('planetDetail.facts')}</p>
+                    <ul className="space-y-2">
                       {planet.facts.slice(0, 3).map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-xs font-body text-white/70">
-                          <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: planet.color }} />
+                        <li key={i} className="flex items-start gap-2 text-sm font-body text-white/70 leading-relaxed">
+                          <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: planet.color }} />
                           {f}
                         </li>
                       ))}
