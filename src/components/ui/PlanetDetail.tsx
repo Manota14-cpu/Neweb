@@ -1,21 +1,29 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { PlanetData } from '@/data/planets'
-import { staggerContainer, fadeInUp, easeOutExpo } from '@/animations/variants'
-import { getSharedMouse } from '@/hooks/useMousePosition'
+import { easeOutExpo } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
-import PlanetSVG from '@/components/planets/PlanetSVG'
 import Planet3D from '@/components/planets/Planet3D'
-
+import PlanetSVG from '@/components/planets/PlanetSVG'
 
 interface PlanetDetailProps {
   planet: PlanetData | null
   onClose: () => void
 }
 
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+}
+
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.92, y: 24 },
+  visible: { opacity: 1, scale: 1, y: 0 },
+  exit: { opacity: 0, scale: 0.96, y: 16 },
+}
+
 function ComparisonTab({ planet }: { planet: PlanetData }) {
   const { t } = useLanguage()
-
   const parseNum = (s: string) => { const n = parseFloat(s.replace(/[^0-9.\-]/g, '')); return isNaN(n) ? 0 : n }
 
   const earth: Record<string, { val: number; unit: string }> = {
@@ -39,70 +47,64 @@ function ComparisonTab({ planet }: { planet: PlanetData }) {
   }
 
   const items = [
-    { key: 'diameter' as const, label: 'Diameter' },
-    { key: 'gravity' as const, label: 'Gravity' },
-    { key: 'day' as const, label: 'Day Length' },
-    { key: 'orbital' as const, label: 'Orbital Period' },
+    { key: 'diameter' as const, label: t('planetDetail.stat.diameter') },
+    { key: 'gravity' as const, label: t('planetDetail.stat.gravity') },
+    { key: 'day' as const, label: t('planetDetail.stat.dayLength') },
+    { key: 'orbital' as const, label: t('planetDetail.stat.orbitalPeriod') },
   ]
 
-  const pSize = Math.min(76, Math.max(24, 24 + (planet.size / 11.21) * 52))
+  const pSize = Math.min(60, Math.max(20, 20 + (planet.size / 11.21) * 40))
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
-      <p className="text-[10px] uppercase tracking-wider font-body mb-4 text-white/40">{t('planetDetail.comparison.title')}</p>
-
-      <div className="flex items-center justify-center gap-8 py-2 mb-6">
-        <div className="text-center">
-          <div className="mx-auto rounded-full transition-all" style={{
-            width: pSize, height: pSize,
-            background: `radial-gradient(circle at 35% 35%, ${planet.color}, ${planet.color}88)`,
-            boxShadow: `0 0 40px ${planet.color}33`,
-          }} />
-          <p className="text-xs font-bold text-white mt-2">{planet.name}</p>
-        </div>
-        <div className="text-xs text-white/30 font-bold">VS</div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+      <p className="text-[10px] uppercase tracking-wider font-body mb-3 text-white/40">{t('planetDetail.comparison.title')}</p>
+      <div className="flex items-center justify-center gap-6 pb-3 mb-4 border-b border-white/5">
         <div className="text-center">
           <div className="mx-auto rounded-full" style={{
-            width: 22, height: 22,
+            width: pSize, height: pSize,
+            background: `radial-gradient(circle at 35% 35%, ${planet.color}, ${planet.color}88)`,
+            boxShadow: `0 0 24px ${planet.color}22`,
+          }} />
+          <p className="text-xs font-bold text-white mt-1">{planet.name}</p>
+        </div>
+        <span className="text-[10px] font-bold text-white/20">VS</span>
+        <div className="text-center">
+          <div className="mx-auto rounded-full" style={{
+            width: 18, height: 18,
             background: 'radial-gradient(circle at 35% 35%, #4B7BE5, #1A3A7C)',
           }} />
-          <p className="text-xs font-bold text-white mt-2">Earth</p>
+          <p className="text-[10px] font-bold text-white mt-1">Earth</p>
         </div>
       </div>
-
       <div className="space-y-2">
         {items.map((item) => {
           const v = vals[item.key]
           const e = earth[item.key]
           const max = Math.max(v, e.val)
           return (
-            <div key={item.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-3">
-              <div className="text-[9px] font-body text-white tracking-widest uppercase mb-2">{item.label}</div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-left">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-white/40" />
-                    <span className="text-xs font-body text-white">Earth</span>
-                  </div>
-                  <span className="text-sm font-bold text-white ml-[14px]">{e.val.toLocaleString()} {e.unit}</span>
+            <div key={item.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-2.5">
+              <div className="text-[8px] font-body text-white/40 tracking-widest uppercase mb-1.5">{item.label}</div>
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className="flex items-center gap-1.5 text-left min-w-0">
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/30 shrink-0" />
+                  <span className="text-[10px] text-white/60 truncate">Earth</span>
+                  <span className="text-[10px] font-bold text-white/80">{e.val.toLocaleString()} {e.unit}</span>
                 </div>
-                <span className="text-lg font-bold" style={{ color: planet.color }}>{ratio(v, e.val)}</span>
-                <div className="text-right">
-                  <div className="flex items-center gap-1.5 justify-end">
-                    <span className="text-xs font-body text-white">{planet.name}</span>
-                    <div className="w-2 h-2 rounded-full" style={{ background: planet.color }} />
-                  </div>
-                  <span className="text-sm font-bold text-white mr-[14px]" style={{ color: planet.color }}>{v.toLocaleString()} {e.unit}</span>
+                <span className="text-sm font-bold shrink-0" style={{ color: planet.color }}>{ratio(v, e.val)}</span>
+                <div className="flex items-center gap-1.5 text-right min-w-0">
+                  <span className="text-[10px] font-bold truncate" style={{ color: planet.color }}>{v.toLocaleString()} {e.unit}</span>
+                  <span className="text-[10px] text-white/60 truncate">{planet.name}</span>
+                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: planet.color }} />
                 </div>
               </div>
-              <div className="relative h-1.5 rounded-full bg-white/5 overflow-hidden">
-                <div className="absolute inset-y-0 rounded-full bg-white/20" style={{ width: `${(e.val / max) * 100}%`, left: 0 }} />
+              <div className="relative h-1 rounded-full bg-white/5 overflow-hidden">
+                <div className="absolute inset-y-0 rounded-full bg-white/10" style={{ width: `${(e.val / max) * 100}%`, left: 0 }} />
                 <motion.div
                   className="absolute inset-y-0 rounded-full"
-                  style={{ background: planet.color, left: 0 }}
+                  style={{ background: planet.color }}
                   initial={{ width: 0 }}
                   animate={{ width: `${(v / max) * 100}%` }}
-                  transition={{ duration: 1, ease: easeOutExpo }}
+                  transition={{ duration: 0.8, ease: easeOutExpo }}
                 />
               </div>
             </div>
@@ -117,36 +119,32 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
   const { t } = useLanguage()
   if (!planet.mainMoons || planet.mainMoons.length === 0) {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="py-8 text-center">
-        <p className="text-sm font-body text-white">{t('planetDetail.moons.none')}</p>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-6 text-center">
+        <p className="text-sm font-body text-white/50">{t('planetDetail.moons.none')}</p>
       </motion.div>
     )
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
-      <p className="text-[10px] uppercase tracking-wider font-body mb-4 text-white">{t('planetDetail.moons.title')}</p>
-      <div className="relative flex items-center justify-center py-8">
-        <PlanetSVG planetId={planet.id} size={80} animate={false} />
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
+      <p className="text-[10px] uppercase tracking-wider font-body mb-3 text-white/50">{t('planetDetail.moons.title')}</p>
+      <div className="relative flex items-center justify-center py-6">
+        <PlanetSVG planetId={planet.id} size={60} animate={false} />
         {planet.mainMoons.map((moon, i) => {
-          const angle = (i / planet.mainMoons!.length) * 360
-          const dist = 80 + i * 30
+          const dist = 60 + i * 24
           return (
             <motion.div
               key={moon.name}
               className="absolute"
-              style={{
-                width: 0, height: 0,
-                left: '50%', top: '50%',
-              }}
+              style={{ width: 0, height: 0, left: '50%', top: '50%' }}
               animate={{ rotate: 360 }}
               transition={{ duration: 20 + i * 10, repeat: Infinity, ease: 'linear' }}
             >
               <div style={{
                 position: 'absolute',
-                width: 8 + i * 2,
-                height: 8 + i * 2,
-                left: -4 - i,
+                width: 6 + i * 2,
+                height: 6 + i * 2,
+                left: -3 - i,
                 top: -dist,
                 borderRadius: '50%',
                 background: `radial-gradient(circle at 40% 35%, rgba(255,255,255,0.5), rgba(255,255,255,0.1))`,
@@ -155,14 +153,14 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
           )
         })}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {planet.mainMoons.map((moon) => (
-          <div key={moon.name} className="flex items-center justify-between px-4 py-2 rounded-lg bg-white/5">
+          <div key={moon.name} className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/[0.02] border border-white/[0.06]">
             <div>
               <p className="text-sm text-white font-body">{moon.name}</p>
-              <p className="text-[10px] font-body text-white">{moon.note}</p>
+              <p className="text-[10px] font-body text-white/50">{moon.note}</p>
             </div>
-            <span className="text-[10px] font-body text-white">{moon.diameter}</span>
+            <span className="text-[10px] font-body text-white/60">{moon.diameter}</span>
           </div>
         ))}
       </div>
@@ -170,212 +168,222 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
   )
 }
 
-function copyToClipboard(text: string) {
-  if (typeof navigator === 'undefined' || !navigator.clipboard) return
-  navigator.clipboard.writeText(text).catch(() => {})
-}
-
 export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<'info' | 'compare' | 'moons'>('info')
-  const [parallax, setParallax] = useState({ x: 0, y: 0 })
+  const modalRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLElement | null>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const previousActive = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
+    triggerRef.current = document.activeElement as HTMLElement
     const style = document.createElement('style')
     style.id = 'planet-detail-lock'
     style.textContent = 'body, html { overflow: hidden !important; }'
     document.head.appendChild(style)
+    requestAnimationFrame(() => closeBtnRef.current?.focus())
     return () => {
       const s = document.getElementById('planet-detail-lock')
       if (s) s.remove()
+      triggerRef.current?.focus()
     }
   }, [])
 
-  useEffect(() => {
-    let animId: number
-    const tick = () => {
-      const m = getSharedMouse()
-      setParallax({ x: m.normalizedX * 8, y: m.normalizedY * 8 })
-      animId = requestAnimationFrame(tick)
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') { e.stopPropagation(); onClose(); return }
+    if (e.key === 'Tab' && modalRef.current) {
+      const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last?.focus() }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first?.focus() }
+      }
     }
-    animId = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(animId)
-  }, [])
-  if (!planet) return null
+  }, [onClose])
 
   const tabs = [
     { id: 'info' as const, label: t('planetDetail.tab.info') },
     { id: 'compare' as const, label: t('planetDetail.tab.comparison') },
-    { id: 'moons' as const, label: `${t('planetDetail.tab.moons')} (${planet.moons})` },
+    { id: 'moons' as const, label: `${t('planetDetail.tab.moons')} (${planet?.moons ?? 0})` },
   ]
+
+  if (!planet) return null
 
   return (
     <AnimatePresence>
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6"
+        variants={overlayVariants}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        transition={{ duration: 0.2 }}
       >
         <motion.div
           className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(60px)' }}
+          style={{ background: 'rgba(0,0,0,0.65)' }}
           onClick={onClose}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClose?.() } }}
-          role="button" tabIndex={0} aria-label="Close"
-          onWheel={(e) => e.preventDefault()}
-          onTouchMove={(e) => e.preventDefault()}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClose() } }}
+          role="button" tabIndex={-1} aria-label="Close"
         />
 
         <motion.div
-          className="relative w-full max-w-7xl max-h-[95vh] overflow-y-auto"
-          style={{
-            background: '#000000',
-          }}
-          initial={{ scale: 0.92, y: 50, opacity: 0 }}
-          animate={{ scale: 1, y: 0, opacity: 1 }}
-          exit={{ scale: 0.92, y: 50, opacity: 0 }}
-          transition={{ duration: 0.6, ease: easeOutExpo }}
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="planet-detail-title"
+          className="relative w-full max-w-[640px] max-h-[90vh] overflow-y-auto rounded-2xl border border-white/[0.06]"
+          style={{ background: '#0A0A0A' }}
+          variants={modalVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          transition={{ duration: 0.25, ease: easeOutExpo }}
+          onKeyDown={handleKeyDown}
         >
-          <motion.button
-            className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center z-20 bg-white/3 border border-white/6"
-            aria-label="Close planet detail"
-            onClick={onClose}
-            whileHover={{ scale: 1.1, background: 'rgba(255,255,255,0.08)' }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M12 4L4 12M4 4l8 8" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </motion.button>
+          <div
+            className="absolute top-0 left-4 right-4 h-0.5 rounded-full"
+            style={{ background: `linear-gradient(90deg, ${planet.color}, ${planet.color}44, transparent)` }}
+          />
 
-          <div className="p-6 md:p-10">
-            <div className="grid md:grid-cols-2 gap-6 md:gap-10">
-              <motion.div
-                className="relative flex flex-col items-center justify-center min-h-[280px]"
-                style={{ x: parallax.x, y: parallax.y }}
+          <div className="p-5 sm:p-8">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1 min-w-0 pr-4">
+                <h2 id="planet-detail-title" className="font-heading text-2xl sm:text-3xl font-bold text-white truncate">
+                  {planet.name}
+                </h2>
+                <p className="text-xs sm:text-sm text-white/40 italic font-body mt-0.5">{planet.nameLatin}</p>
+              </div>
+              <button
+                ref={closeBtnRef}
+                onClick={onClose}
+                aria-label="Close planet detail"
+                className="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center transition-colors bg-white/[0.04] hover:bg-white/[0.08] active:bg-white/[0.12] border border-white/[0.06]"
               >
-                <div className="w-full max-w-[280px] aspect-square">
-                  <Planet3D planetId={planet.id} size={240} />
-                </div>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M12 4L4 12M4 4l8 8" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
 
+            <div className="flex flex-col sm:flex-row gap-5 mb-5">
+              <div className="relative flex items-center justify-center w-full sm:w-[180px] h-[180px] shrink-0 mx-auto sm:mx-0">
+                <div className="w-full h-full">
+                  <Planet3D planetId={planet.id} size={180} />
+                </div>
                 <motion.div
-                  className="absolute w-[130%] h-[130%] rounded-full pointer-events-none"
+                  className="absolute inset-0 rounded-full pointer-events-none"
                   style={{
                     background: `radial-gradient(circle at 50% 50%, ${planet.color}11, transparent 60%)`,
-                    filter: 'blur(30px)',
+                    filter: 'blur(24px)',
                   }}
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 />
+              </div>
 
-                <motion.button
-                  onClick={() => { copyToClipboard(planet.name); onClose() }}
-                  className="mt-4 px-3 py-1.5 rounded-full text-[8px] tracking-wider uppercase font-body transition-colors"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', color: 'white' }}
-                  whileHover={{ background: 'rgba(255,255,255,0.06)' }}
-                >
-                  {t('planetDetail.share')}
-                </motion.button>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm leading-relaxed font-body text-white/80 line-clamp-4">
+                  {t(`planet.${planet.id}.description`)}
+                </p>
 
-                <motion.button
-                  className="mt-2 px-3 py-1.5 rounded-full text-[8px] tracking-wider uppercase font-body"
-                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', color: 'white', cursor: 'default' }}
-                  title={t('planetDetail.comingSoon')}
-                >
-                  {t('planetDetail.view3d')}
-                </motion.button>
-              </motion.div>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={() => { if (typeof navigator !== 'undefined' && navigator.clipboard) navigator.clipboard.writeText(planet.name).catch(() => {}) }}
+                    className="px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body transition-colors bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-white/70"
+                  >
+                    {t('planetDetail.share')}
+                  </button>
+                  <button
+                    className="px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body bg-white/[0.02] border border-white/[0.04] text-white/40 cursor-default"
+                    title={t('planetDetail.comingSoon')}
+                  >
+                    {t('planetDetail.view3d')}
+                  </button>
+                </div>
 
-              <motion.div className="space-y-5" variants={staggerContainer} initial="hidden" animate="visible">
-                <motion.div variants={fadeInUp}>
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-body text-white">
-                    {t('planetDetail.profile')}
-                  </span>
-                  <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-semibold text-white mt-2">
-                    {planet.name}
-                  </h2>
-                  <p className="text-sm text-white italic font-body">{planet.nameLatin}</p>
-                </motion.div>
-
-                <div className="flex gap-2 border-b border-white/5 pb-2">
+                <div className="flex gap-1.5 mt-3 border-b border-white/[0.06] pb-2">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-4 py-2 rounded-lg text-[10px] tracking-wider uppercase font-body transition-all ${
-                        activeTab === tab.id ? 'bg-white/10 text-white' : 'bg-transparent text-white'
+                      className={`px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body transition-all ${
+                        activeTab === tab.id
+                          ? 'bg-white/[0.08] text-white'
+                          : 'bg-transparent text-white/40 hover:text-white/70'
                       }`}
                     >
                       {tab.label}
                     </button>
                   ))}
                 </div>
-
-                <AnimatePresence mode="wait">
-                  {activeTab === 'info' && (
-                    <motion.div key="info" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
-                      <motion.p className="text-sm md:text-base leading-relaxed font-body text-white" variants={fadeInUp}>
-                        {t(`planet.${planet.id}.description`)}
-                      </motion.p>
-
-                      <motion.div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4" variants={fadeInUp}>
-                        {[
-                          { label: t('planetDetail.stat.diameter'), value: planet.diameter },
-                          { label: t('planetDetail.stat.distance'), value: planet.distanceFromSun },
-                          { label: t('planetDetail.stat.orbitalPeriod'), value: planet.orbitalPeriod },
-                          { label: t('planetDetail.stat.dayLength'), value: planet.dayLength },
-                          { label: t('planetDetail.stat.gravity'), value: planet.gravity },
-                          { label: t('planetDetail.stat.temperature'), value: planet.temperature },
-                          { label: t('planetDetail.stat.moons'), value: planet.moons.toString() },
-                          { label: t('planetDetail.stat.discovery'), value: planet.discovery.split(' — ')[0] },
-                        ].map((s) => (
-                          <div key={s.label} className="p-3 rounded-xl bg-white/5 border border-white/10">
-                            <p className="text-[9px] uppercase tracking-wider font-body text-white">{s.label}</p>
-                            <p className="text-xs text-white mt-1 font-body">{s.value}</p>
-                          </div>
-                        ))}
-                      </motion.div>
-
-                      <motion.div variants={fadeInUp} className="mt-4">
-                        <p className="text-[10px] uppercase tracking-wider font-body mb-2 text-white">{t('planetDetail.atmosphere')}</p>
-                        <p className="text-sm font-body text-white">{planet.atmosphere}</p>
-                      </motion.div>
-
-                      <motion.div variants={fadeInUp} className="mt-4">
-                        <p className="text-[10px] uppercase tracking-wider font-body mb-3 text-white">{t('planetDetail.missions')}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {planet.missions.map((m) => (
-                            <span key={m} className="px-3 py-1.5 rounded-full text-[10px] font-body bg-white/5 border border-white/10 text-white">
-                              {m}
-                            </span>
-                          ))}
-                        </div>
-                      </motion.div>
-
-                      <motion.div variants={fadeInUp} className="mt-4">
-                        <p className="text-[10px] uppercase tracking-wider font-body mb-3 text-white">{t('planetDetail.facts')}</p>
-                        <ul className="space-y-2">
-                          {planet.facts.slice(0, 3).map((f, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm font-body text-white">
-                              <span className="w-1 h-1 rounded-full mt-2 flex-shrink-0 bg-white/50" />
-                              {f}
-                            </li>
-                          ))}
-                        </ul>
-                      </motion.div>
-                    </motion.div>
-                  )}
-
-                  {activeTab === 'compare' && <ComparisonTab key="compare" planet={planet} />}
-                  {activeTab === 'moons' && <MoonsTab key="moons" planet={planet} />}
-                </AnimatePresence>
-              </motion.div>
+              </div>
             </div>
+
+            <AnimatePresence mode="wait">
+              {activeTab === 'info' && (
+                <motion.div
+                  key="info"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                    {[
+                      { label: t('planetDetail.stat.diameter'), value: planet.diameter },
+                      { label: t('planetDetail.stat.distance'), value: planet.distanceFromSun },
+                      { label: t('planetDetail.stat.orbitalPeriod'), value: planet.orbitalPeriod },
+                      { label: t('planetDetail.stat.dayLength'), value: planet.dayLength },
+                      { label: t('planetDetail.stat.gravity'), value: planet.gravity },
+                      { label: t('planetDetail.stat.temperature'), value: planet.temperature },
+                      { label: t('planetDetail.stat.moons'), value: planet.moons.toString() },
+                      { label: t('planetDetail.stat.discovery'), value: planet.discovery.split(' — ')[0] },
+                    ].map((s) => (
+                      <div key={s.label} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                        <p className="text-[9px] uppercase tracking-wider font-body text-white/40">{s.label}</p>
+                        <p className="text-xs text-white/90 mt-1 font-body font-medium">{s.value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-1.5 text-white/50">{t('planetDetail.atmosphere')}</p>
+                    <p className="text-sm font-body text-white/80">{planet.atmosphere}</p>
+                  </div>
+
+                  <div className="mt-3">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-2 text-white/50">{t('planetDetail.missions')}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {planet.missions.map((m) => (
+                        <span key={m} className="px-2.5 py-1 rounded-full text-[9px] font-body bg-white/[0.03] border border-white/[0.06] text-white/70">
+                          {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-2 text-white/50">{t('planetDetail.facts')}</p>
+                    <ul className="space-y-1.5">
+                      {planet.facts.slice(0, 3).map((f, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs font-body text-white/70">
+                          <span className="w-1 h-1 rounded-full mt-1.5 shrink-0" style={{ background: planet.color }} />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              )}
+              {activeTab === 'compare' && <ComparisonTab key="compare" planet={planet} />}
+              {activeTab === 'moons' && <MoonsTab key="moons" planet={planet} />}
+            </AnimatePresence>
           </div>
         </motion.div>
       </motion.div>
