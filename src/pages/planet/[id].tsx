@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { planets, PlanetData } from '@/data/planets'
@@ -7,6 +6,17 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import Planet3D from '@/components/planets/Planet3D'
 import PlanetSVG from '@/components/planets/PlanetSVG'
 import Link from 'next/link'
+
+export async function getStaticPaths() {
+  const paths = planets.map((p) => ({ params: { id: p.id } }))
+  return { paths, fallback: false }
+}
+
+export async function getStaticProps({ params }: { params: { id: string } }) {
+  return {
+    props: { planet: planets.find((p) => p.id === params.id) || null },
+  }
+}
 
 function ComparisonTab({ planet }: { planet: PlanetData }) {
   const { t } = useLanguage()
@@ -154,21 +164,40 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
   )
 }
 
-export default function PlanetPage() {
-  const { t } = useLanguage()
-  const router = useRouter()
-  const { id } = router.query
-  const [activeTab, setActiveTab] = useState<'info' | 'compare' | 'moons'>('info')
+function NavbarBack() {
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-40 flex justify-center px-3 md:px-6 pt-2">
+      <div className="w-full max-w-7xl rounded-2xl" style={{
+        background: 'rgba(0,0,0,0.8)',
+        backdropFilter: 'blur(32px) saturate(1.3)',
+        WebkitBackdropFilter: 'blur(32px) saturate(1.3)',
+        border: '1px solid rgba(255,255,255,0.06)',
+      }}>
+        <div className="flex items-center justify-between h-12 md:h-14 px-4 md:px-6">
+          <Link
+            href="/"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body transition-colors bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-white/70"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Back
+          </Link>
 
-  const planet = typeof id === 'string' ? planets.find((p) => p.id === id) : null
+          <span className="text-[9px] tracking-wider uppercase font-body text-white/40">
+            Solar System
+          </span>
 
-  if (!router.isReady) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#000000' }}>
-        <div className="w-6 h-6 rounded-full border border-white/20 border-t-white/60 animate-spin" />
+          <div className="w-16" />
+        </div>
       </div>
-    )
-  }
+    </nav>
+  )
+}
+
+export default function PlanetPage({ planet }: { planet: PlanetData | null }) {
+  const { t } = useLanguage()
+  const [activeTab, setActiveTab] = useState<'info' | 'compare' | 'moons'>('info')
 
   if (!planet) {
     return (
@@ -328,36 +357,5 @@ export default function PlanetPage() {
         </div>
       </div>
     </div>
-  )
-}
-
-function NavbarBack() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-40 flex justify-center px-3 md:px-6 pt-2">
-      <div className="w-full max-w-7xl rounded-2xl" style={{
-        background: 'rgba(0,0,0,0.8)',
-        backdropFilter: 'blur(32px) saturate(1.3)',
-        WebkitBackdropFilter: 'blur(32px) saturate(1.3)',
-        border: '1px solid rgba(255,255,255,0.06)',
-      }}>
-        <div className="flex items-center justify-between h-12 md:h-14 px-4 md:px-6">
-          <Link
-            href="/"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] tracking-wider uppercase font-body transition-colors bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-white/70"
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            Back
-          </Link>
-
-          <span className="text-[9px] tracking-wider uppercase font-body text-white/40">
-            Solar System
-          </span>
-
-          <div className="w-16" />
-        </div>
-      </div>
-    </nav>
   )
 }
