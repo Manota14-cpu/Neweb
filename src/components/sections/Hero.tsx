@@ -1,5 +1,4 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
-import dynamic from 'next/dynamic'
 import { useRef, useState, useEffect } from 'react'
 import { staggerContainer, fadeIn, fadeInUp, easeOutExpo } from '@/animations/variants'
 import { getSharedMouse } from '@/hooks/useMousePosition'
@@ -7,9 +6,6 @@ import { useLanguage } from '@/contexts/LanguageContext'
 import SunCorona from '@/components/effects/SunCorona'
 import MagneticButton from '@/components/ui/MagneticButton'
 import PlanetSVG from '@/components/planets/PlanetSVG'
-import starPulsar from '@/data/star-pulsar.json'
-
-const LottiePlayer = dynamic(() => import('@/components/ui/LottiePlayer'), { ssr: false })
 
 const easeOutBack: [number, number, number, number] = [0.34, 1.56, 0.64, 1]
 
@@ -246,10 +242,6 @@ export default function Hero() {
           </MagneticButton>
         </motion.div>
       </motion.div>
-
-      <div className="absolute bottom-12 right-12 z-10 pointer-events-none opacity-30">
-        <LottiePlayer animationData={starPulsar} style={{ width: 120, height: 120 }} />
-      </div>
 
       <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
