@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import { planets, PlanetData } from '@/data/planets'
 import { easeOutExpo } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
-import Planet3D from '@/components/planets/Planet3D'
+
+const Planet3D = dynamic(() => import('@/components/planets/Planet3D'), { ssr: false })
 import PlanetSVG from '@/components/planets/PlanetSVG'
 import Link from 'next/link'
 
@@ -298,7 +300,7 @@ export default function PlanetPage({ planet }: { planet: PlanetData | null }) {
               {activeTab === 'info' && (
                 <motion.div
                   key="info"
-                  initial={{ opacity: 0, y: 12 }}
+                  initial={false}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
