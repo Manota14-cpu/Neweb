@@ -1,13 +1,10 @@
 import { useState, useMemo } from 'react'
-import dynamic from 'next/dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
 import { planets, PlanetData } from '@/data/planets'
 import { staggerContainer, easeOutExpo } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
 import SectionHeader from '@/components/ui/SectionHeader'
 import PlanetCard from '@/components/ui/PlanetCard'
-
-const PlanetDetail = dynamic(() => import('@/components/ui/PlanetDetail'), { ssr: false })
 
 function getTempRange(planet: PlanetData): 'cold' | 'moderate' | 'hot' {
   const nums = planet.temperature.match(/-?\d+/g)
@@ -21,7 +18,6 @@ function getTempRange(planet: PlanetData): 'cold' | 'moderate' | 'hot' {
 
 export default function PlanetSection() {
   const { t } = useLanguage()
-  const [selected, setSelected] = useState<PlanetData | null>(null)
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('')
   const [tempFilter, setTempFilter] = useState('')
@@ -148,7 +144,7 @@ export default function PlanetSection() {
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.35, ease: easeOutExpo }}
               >
-                <PlanetCard planet={planet} index={planets.indexOf(planet)} onClick={setSelected} />
+                <PlanetCard planet={planet} index={planets.indexOf(planet)} />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -164,7 +160,6 @@ export default function PlanetSection() {
           </motion.p>
         )}
 
-        <PlanetDetail planet={selected} onClose={() => setSelected(null)} />
       </div>
     </motion.section>
   )

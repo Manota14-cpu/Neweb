@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { PlanetData } from '@/data/planets'
 import { scaleIn } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -7,7 +8,6 @@ import PlanetSVG from '@/components/planets/PlanetSVG'
 interface PlanetCardProps {
   planet: PlanetData
   index: number
-  onClick: (planet: PlanetData) => void
 }
 
 function TempBar({ temp }: { temp: string }) {
@@ -30,7 +30,7 @@ function TempBar({ temp }: { temp: string }) {
   )
 }
 
-export default function PlanetCard({ planet, index, onClick }: PlanetCardProps) {
+export default function PlanetCard({ planet, index }: PlanetCardProps) {
   const { t } = useLanguage()
 
   const typeLabels: Record<string, string> = {
@@ -48,20 +48,17 @@ export default function PlanetCard({ planet, index, onClick }: PlanetCardProps) 
   const hab = habitabilityConfig[planet.habitability]
 
   return (
-    <motion.div
-      className="group cursor-pointer"
-      variants={scaleIn}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      onClick={() => onClick(planet)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(planet) } }}
-      role="button"
-      tabIndex={0}
+    <Link
+      href={`/planet/${planet.id}`}
+      className="block group"
       aria-label={`${t('planetCard.viewDetails')} ${planet.name}`}
     >
       <motion.div
-        className="relative rounded-3xl overflow-hidden h-full bg-black border border-gray-800/50"
+        className="relative rounded-3xl overflow-hidden h-full bg-black border border-gray-800/50 cursor-pointer"
+        variants={scaleIn}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
         whileHover={{ y: -6, scale: 1.02 }}
         transition={{ type: "spring", stiffness: 250, damping: 20 }}
       >
@@ -113,15 +110,11 @@ export default function PlanetCard({ planet, index, onClick }: PlanetCardProps) 
             </svg>
           </div>
 
-          <motion.button
-            className="w-full py-2.5 mt-4 rounded-lg text-xs tracking-[0.2em] uppercase font-medium text-black bg-white transition-all hover:bg-gray-200"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
+          <div className="w-full py-2.5 mt-4 rounded-lg text-xs tracking-[0.2em] uppercase font-medium text-center text-black bg-white transition-all hover:bg-gray-200">
             {t('planetCard.explore')}
-          </motion.button>
+          </div>
         </div>
       </motion.div>
-    </motion.div>
+    </Link>
   )
 }

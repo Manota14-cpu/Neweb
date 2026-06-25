@@ -22,6 +22,7 @@ export type TranslationKey =
   | 'planetDetail.stat.gravity' | 'planetDetail.stat.temperature' | 'planetDetail.stat.moons' | 'planetDetail.stat.discovery'
   | 'planetDetail.atmosphere' | 'planetDetail.missions' | 'planetDetail.facts'
   | 'planetDetail.profile' | 'planetDetail.share' | 'planetDetail.view3d' | 'planetDetail.comingSoon'
+  | 'planetDetail.notFound' | 'planetDetail.backToHome'
   | 'planetDetail.moons.title' | 'planetDetail.moons.none'
   | 'planetDetail.comparison.title' | 'planetDetail.comparison.vs' | 'planetDetail.comparison.earth'
   | 'planetDetail.comparison.metric.diameter' | 'planetDetail.comparison.metric.gravity' | 'planetDetail.comparison.metric.dayLength'
@@ -78,7 +79,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     'planetDetail.stat.gravity': 'Gravity', 'planetDetail.stat.temperature': 'Temperature',
     'planetDetail.stat.moons': 'Moons', 'planetDetail.stat.discovery': 'Discovery',
     'planetDetail.atmosphere': 'Atmosphere', 'planetDetail.missions': 'Exploration Missions', 'planetDetail.facts': 'Interesting Facts',
-    'planetDetail.profile': 'Planet Profile', 'planetDetail.share': 'Share Planet', 'planetDetail.view3d': 'View in 3D — Coming Soon', 'planetDetail.comingSoon': 'Coming soon',
+    'planetDetail.profile': 'Planet Profile', 'planetDetail.share': 'Share Planet', 'planetDetail.view3d': 'View in 3D — Coming Soon', 'planetDetail.comingSoon': 'Coming soon', 'planetDetail.notFound': 'Planet not found', 'planetDetail.backToHome': 'Back to Home',
     'planetDetail.moons.title': 'Main Moons', 'planetDetail.moons.none': 'No notable moons',
     'planetDetail.comparison.title': 'Size Comparison vs Earth', 'planetDetail.comparison.vs': 'vs', 'planetDetail.comparison.earth': 'Earth',
     'planetDetail.comparison.metric.diameter': 'Diameter', 'planetDetail.comparison.metric.gravity': 'Gravity', 'planetDetail.comparison.metric.dayLength': 'Day Length',
@@ -257,7 +258,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     'planetDetail.stat.gravity': 'Gravidade', 'planetDetail.stat.temperature': 'Temperatura',
     'planetDetail.stat.moons': 'Luas', 'planetDetail.stat.discovery': 'Descoberta',
     'planetDetail.atmosphere': 'Atmosfera', 'planetDetail.missions': 'Missões de Exploração', 'planetDetail.facts': 'Fatos Interessantes',
-    'planetDetail.profile': 'Perfil do Planeta', 'planetDetail.share': 'Compartilhar Planeta', 'planetDetail.view3d': 'Ver em 3D — Em Breve', 'planetDetail.comingSoon': 'Em breve',
+    'planetDetail.profile': 'Perfil do Planeta', 'planetDetail.share': 'Compartilhar Planeta', 'planetDetail.view3d': 'Ver em 3D — Em Breve', 'planetDetail.comingSoon': 'Em breve', 'planetDetail.notFound': 'Planeta não encontrado', 'planetDetail.backToHome': 'Voltar ao Início',
     'planetDetail.moons.title': 'Principais Luas', 'planetDetail.moons.none': 'Nenhuma lua notável',
     'planetDetail.comparison.title': 'Comparação de Tamanho vs Terra', 'planetDetail.comparison.vs': 'vs', 'planetDetail.comparison.earth': 'Terra',
     'planetDetail.comparison.metric.diameter': 'Diâmetro', 'planetDetail.comparison.metric.gravity': 'Gravidade', 'planetDetail.comparison.metric.dayLength': 'Duração do Dia',
@@ -436,7 +437,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     'planetDetail.stat.gravity': 'Gravedad', 'planetDetail.stat.temperature': 'Temperatura',
     'planetDetail.stat.moons': 'Lunas', 'planetDetail.stat.discovery': 'Descubrimiento',
     'planetDetail.atmosphere': 'Atmósfera', 'planetDetail.missions': 'Misiones de Exploración', 'planetDetail.facts': 'Datos Interesantes',
-    'planetDetail.profile': 'Perfil del Planeta', 'planetDetail.share': 'Compartir Planeta', 'planetDetail.view3d': 'Ver en 3D — Próximamente', 'planetDetail.comingSoon': 'Próximamente',
+    'planetDetail.profile': 'Perfil del Planeta', 'planetDetail.share': 'Compartir Planeta', 'planetDetail.view3d': 'Ver en 3D — Próximamente', 'planetDetail.comingSoon': 'Próximamente', 'planetDetail.notFound': 'Planeta no encontrado', 'planetDetail.backToHome': 'Volver al Inicio',
     'planetDetail.moons.title': 'Lunas Principales', 'planetDetail.moons.none': 'Sin lunas notables',
     'planetDetail.comparison.title': 'Comparación de Tamaño vs Tierra', 'planetDetail.comparison.vs': 'vs', 'planetDetail.comparison.earth': 'Tierra',
     'planetDetail.comparison.metric.diameter': 'Diámetro', 'planetDetail.comparison.metric.gravity': 'Gravedad', 'planetDetail.comparison.metric.dayLength': 'Duración del Día',
@@ -615,7 +616,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     'planetDetail.stat.gravity': 'Gravité', 'planetDetail.stat.temperature': 'Température',
     'planetDetail.stat.moons': 'Lunes', 'planetDetail.stat.discovery': 'Découverte',
     'planetDetail.atmosphere': 'Atmosphère', 'planetDetail.missions': 'Missions d\'Exploration', 'planetDetail.facts': 'Faits Intéressants',
-    'planetDetail.profile': 'Profil de la Planète', 'planetDetail.share': 'Partager la Planète', 'planetDetail.view3d': 'Voir en 3D — Bientôt', 'planetDetail.comingSoon': 'Bientôt',
+    'planetDetail.profile': 'Profil de la Planète', 'planetDetail.share': 'Partager la Planète', 'planetDetail.view3d': 'Voir en 3D — Bientôt', 'planetDetail.comingSoon': 'Bientôt', 'planetDetail.notFound': 'Planète introuvable', 'planetDetail.backToHome': 'Retour à l\'Accueil',
     'planetDetail.moons.title': 'Lunes Principales', 'planetDetail.moons.none': 'Aucune lune notable',
     'planetDetail.comparison.title': 'Comparaison de Taille vs Terre', 'planetDetail.comparison.vs': 'vs', 'planetDetail.comparison.earth': 'Terre',
     'planetDetail.comparison.metric.diameter': 'Diamètre', 'planetDetail.comparison.metric.gravity': 'Gravité', 'planetDetail.comparison.metric.dayLength': 'Durée du Jour',
