@@ -23,6 +23,8 @@ export function LenisProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let destroyed = false
 
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+
     const init = async () => {
       if (typeof window === 'undefined') return
 
@@ -39,9 +41,9 @@ export function LenisProvider({ children }: { children: ReactNode }) {
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           orientation: 'vertical',
           gestureOrientation: 'vertical',
-          smoothWheel: true,
-          wheelMultiplier: 1,
-          touchMultiplier: 1.5,
+          smoothWheel: !isTouchDevice,
+          touchMultiplier: 1,
+          syncTouch: true,
         })
         lenisRef.current = lenis
 
