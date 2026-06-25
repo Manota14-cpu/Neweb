@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { planets, PlanetData } from '@/data/planets'
-import { fadeInUp, easeOutExpo } from '@/animations/variants'
+import { easeOutExpo } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
 import SectionHeader from '@/components/ui/SectionHeader'
 import PlanetSVG from '@/components/planets/PlanetSVG'

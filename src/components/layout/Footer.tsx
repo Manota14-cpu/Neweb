@@ -45,6 +45,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8 md:gap-12">
           <motion.div className="md:col-span-2" variants={fadeInUp}>
             <div className="flex items-center gap-2.5 mb-4 cursor-pointer"
+              role="button" tabIndex={0} aria-label="Easter egg"
               onClick={() => {
                 const next = logoClicks + 1
                 setLogoClicks(next)
@@ -54,8 +55,9 @@ export default function Footer() {
                   setTimeout(() => document.documentElement.style.removeProperty('--supernova'), 2000)
                 }
               }}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); (e.currentTarget as HTMLDivElement).click() } }}
             >
-              <img src="/logo.png" alt="BWL Studios" className="h-10 w-auto" />
+              <img src="/logo.png" alt="BWL Studios" width="40" height="40" className="h-10 w-auto" loading="lazy" />
             </div>
             <div className="mt-4">
               <SocialIcons horizontal />

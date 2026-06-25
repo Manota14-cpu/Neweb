@@ -1,12 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useRef, useEffect } from 'react'
 import { PlanetData } from '@/data/planets'
-import { staggerContainer, fadeInUp, easeOutExpo, springGentle } from '@/animations/variants'
+import { staggerContainer, fadeInUp, easeOutExpo } from '@/animations/variants'
 import { getSharedMouse } from '@/hooks/useMousePosition'
 import { useLanguage } from '@/contexts/LanguageContext'
 import PlanetSVG from '@/components/planets/PlanetSVG'
 import Planet3D from '@/components/planets/Planet3D'
-import SunSVG from '@/components/planets/SunSVG'
+
 
 interface PlanetDetailProps {
   planet: PlanetData | null
@@ -222,6 +222,8 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
           className="absolute inset-0"
           style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(60px)' }}
           onClick={onClose}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClose?.() } }}
+          role="button" tabIndex={0} aria-label="Close"
           onWheel={(e) => e.preventDefault()}
           onTouchMove={(e) => e.preventDefault()}
           initial={{ opacity: 0 }}
@@ -240,8 +242,8 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
           transition={{ duration: 0.6, ease: easeOutExpo }}
         >
           <motion.button
-            className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center z-20"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+            className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center z-20 bg-white/3 border border-white/6"
+            aria-label="Close planet detail"
             onClick={onClose}
             whileHover={{ scale: 1.1, background: 'rgba(255,255,255,0.08)' }}
             whileTap={{ scale: 0.95 }}

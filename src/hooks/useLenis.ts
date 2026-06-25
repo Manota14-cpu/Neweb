@@ -74,7 +74,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
 
         ScrollTrigger.refresh()
       } catch (err) {
-        console.warn('[Lenis] smooth scroll unavailable:', err)
+        // lenis unavailable
       }
     }
 

@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { easePremium } from '@/animations/variants'
 import { useActiveSection } from '@/hooks/useActiveSection'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { languages, type LangCode } from '@/i18n/translations'
+import { languages } from '@/i18n/translations'
 
 const links = [
   { key: 'nav.home' as const, href: '#hero', id: 'hero' },
@@ -62,7 +62,7 @@ export default function Navbar() {
       >
         <div className="flex items-center justify-between h-12 md:h-14 px-4 md:px-6">
           <a href="#hero" className="flex items-center gap-2 group">
-            <img src="/logo.png" alt="BWL Studios" className="h-7 w-auto" />
+            <img src="/logo.png" alt="BWL Studios" width="28" height="28" className="h-7 w-auto" />
           </a>
 
           <div className="hidden md:flex items-center gap-0.5">

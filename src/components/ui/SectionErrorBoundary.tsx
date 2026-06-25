@@ -11,7 +11,7 @@ export default class SectionErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.warn('[SectionError]', error.message, info.componentStack)
+    // error logged silently
   }
 
   render() {

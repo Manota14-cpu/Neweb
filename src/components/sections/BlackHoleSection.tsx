@@ -47,8 +47,10 @@ export default function BlackHoleSection() {
             <div className="relative w-[50vmin] h-[50vmin] max-w-[500px] max-h-[500px]">
               <img
                 src="/black-hole.jpg"
-                alt="M87* supermassive black hole"
+                alt="M87* supermassive black hole captured by Event Horizon Telescope"
+                width="500" height="500"
                 className="w-full h-full object-cover rounded-full"
+                loading="lazy"
                 style={{ boxShadow: '0 0 80px rgba(255,100,50,0.15), 0 0 200px rgba(255,50,0,0.05)' }}
               />
             </div>
