@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
 import { planets, PlanetData } from '@/data/planets'
 import { staggerContainer, easeOutExpo } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
 import SectionHeader from '@/components/ui/SectionHeader'
 import PlanetCard from '@/components/ui/PlanetCard'
-import PlanetDetail from '@/components/ui/PlanetDetail'
+
+const PlanetDetail = dynamic(() => import('@/components/ui/PlanetDetail'), { ssr: false })
 
 function getTempRange(planet: PlanetData): 'cold' | 'moderate' | 'hot' {
   const nums = planet.temperature.match(/-?\d+/g)
