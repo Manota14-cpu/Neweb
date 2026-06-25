@@ -296,11 +296,11 @@ export default function PlanetPage({ planet }: { planet: PlanetData | null }) {
               </div>
             </div>
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               {activeTab === 'info' && (
                 <motion.div
                   key="info"
-                  initial={false}
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
