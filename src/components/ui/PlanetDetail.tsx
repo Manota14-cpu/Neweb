@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { PlanetData } from '@/data/planets'
 import { easeOutExpo } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { useLenis } from '@/hooks/useLenis'
 import Planet3D from '@/components/planets/Planet3D'
 import PlanetSVG from '@/components/planets/PlanetSVG'
 
@@ -170,6 +171,7 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
 
 export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
   const { t } = useLanguage()
+  const { lenis } = useLenis()
   const [activeTab, setActiveTab] = useState<'info' | 'compare' | 'moons'>('info')
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
@@ -177,17 +179,50 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
 
   useEffect(() => {
     triggerRef.current = document.activeElement as HTMLElement
-    const style = document.createElement('style')
-    style.id = 'planet-detail-lock'
-    style.textContent = 'html, body { overflow: hidden !important; position: fixed !important; width: 100% !important; height: 100% !important; }'
-    document.head.appendChild(style)
+    const y = window.scrollY
+    const html = document.documentElement
+    const body = document.body
+
+    if (lenis && typeof (lenis as any).stop === 'function') {
+      ;(lenis as any).stop()
+    }
+
+    const prevHtmlOverflow = html.style.overflow
+    const prevBodyPosition = body.style.position
+    const prevBodyTop = body.style.top
+    const prevBodyWidth = body.style.width
+    const prevBodyOverflow = body.style.overflow
+
+    html.style.overflow = 'hidden'
+    body.style.position = 'fixed'
+    body.style.top = `-${y}px`
+    body.style.width = '100%'
+    body.style.overflow = 'hidden'
+
+    const preventTouch = (e: TouchEvent) => {
+      if (e.cancelable) e.preventDefault()
+    }
+    document.addEventListener('touchmove', preventTouch, { passive: false })
+
     requestAnimationFrame(() => closeBtnRef.current?.focus())
+
     return () => {
-      const s = document.getElementById('planet-detail-lock')
-      if (s) s.remove()
+      if (lenis && typeof (lenis as any).start === 'function') {
+        ;(lenis as any).start()
+      }
+
+      html.style.overflow = prevHtmlOverflow
+      body.style.position = prevBodyPosition
+      body.style.top = prevBodyTop
+      body.style.width = prevBodyWidth
+      body.style.overflow = prevBodyOverflow
+
+      document.removeEventListener('touchmove', preventTouch)
+
+      window.scrollTo(0, y)
       triggerRef.current?.focus()
     }
-  }, [])
+  }, [lenis])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') { e.stopPropagation(); onClose(); return }

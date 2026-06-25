@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, createContext, useContext, createElement, type ReactNode } from 'react'
+import { useEffect, useRef, useState, createContext, useContext, createElement, useMemo, type ReactNode } from 'react'
 import { useMotionValue } from 'framer-motion'
 
 interface SmoothScrollCtxType {
@@ -16,6 +16,7 @@ const SmoothScrollCtx = createContext<SmoothScrollCtxType>({
 })
 
 export function LenisProvider({ children }: { children: ReactNode }) {
+  const [lenis, setLenis] = useState<unknown | null>(null)
   const lenisRef = useRef<unknown | null>(null)
   const scrollY = useMotionValue(0)
   const progress = useMotionValue(0)
@@ -35,7 +36,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
 
         if (destroyed) return
 
-        const lenis = new Lenis({
+        const instance = new Lenis({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
           orientation: 'vertical',
@@ -43,16 +44,17 @@ export function LenisProvider({ children }: { children: ReactNode }) {
           smoothWheel: true,
           wheelMultiplier: 1,
         })
-        lenisRef.current = lenis
+        lenisRef.current = instance
+        setLenis(instance)
 
         const raf = (time: number) => {
           if (destroyed) return
-          lenis.raf(time)
+          lenisRef.current && (lenisRef.current as any).raf(time)
           requestAnimationFrame(raf)
         }
         requestAnimationFrame(raf)
 
-        lenis.on('scroll', (e: { scroll: number; progress: number }) => {
+        instance.on('scroll', (e: { scroll: number; progress: number }) => {
           if (destroyed) return
           scrollY.set(e.scroll)
           progress.set(e.progress)
@@ -62,9 +64,9 @@ export function LenisProvider({ children }: { children: ReactNode }) {
         ScrollTrigger.scrollerProxy(document.documentElement, {
           scrollTop(value) {
             if (value !== undefined) {
-              lenis.scrollTo(value, { immediate: true })
+              instance.scrollTo(value, { immediate: true })
             }
-            return lenis.scroll ?? 0
+            return instance.scroll ?? 0
           },
           getBoundingClientRect() {
             return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }
@@ -84,13 +86,18 @@ export function LenisProvider({ children }: { children: ReactNode }) {
       destroyed = true
       if (lenisRef.current && typeof (lenisRef.current as any).destroy === 'function') {
         ;(lenisRef.current as any).destroy()
+        lenisRef.current = null
       }
     }
   }, [scrollY, progress])
 
-  return createElement(SmoothScrollCtx.Provider, {
-    value: { lenis: lenisRef.current, scrollY: scrollY.get(), progress: progress.get() },
-  }, children)
+  const ctx = useMemo(() => ({
+    lenis,
+    scrollY: scrollY.get(),
+    progress: progress.get(),
+  }), [lenis, scrollY, progress])
+
+  return createElement(SmoothScrollCtx.Provider, { value: ctx }, children)
 }
 
 export function useLenis() {
