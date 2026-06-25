@@ -162,6 +162,14 @@ export default function PlanetPage() {
 
   const planet = typeof id === 'string' ? planets.find((p) => p.id === id) : null
 
+  if (!router.isReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#000000' }}>
+        <div className="w-6 h-6 rounded-full border border-white/20 border-t-white/60 animate-spin" />
+      </div>
+    )
+  }
+
   if (!planet) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: '#000000' }}>
