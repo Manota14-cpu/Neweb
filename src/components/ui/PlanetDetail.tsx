@@ -3,7 +3,6 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { PlanetData } from '@/data/planets'
 import { easeOutExpo } from '@/animations/variants'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { useLenis } from '@/hooks/useLenis'
 import Planet3D from '@/components/planets/Planet3D'
 import PlanetSVG from '@/components/planets/PlanetSVG'
 
@@ -58,8 +57,8 @@ function ComparisonTab({ planet }: { planet: PlanetData }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-      <p className="text-[10px] uppercase tracking-wider font-body mb-4 text-white/40">{t('planetDetail.comparison.title')}</p>
-      <div className="flex items-center justify-center gap-8 pb-4 mb-5 border-b border-white/5">
+      <p className="text-[10px] uppercase tracking-wider font-body mb-5 text-white/40">{t('planetDetail.comparison.title')}</p>
+      <div className="flex items-center justify-center gap-8 pb-5 mb-6 border-b border-white/5">
         <div className="text-center">
           <div className="mx-auto rounded-full" style={{
             width: pSize, height: pSize,
@@ -77,22 +76,22 @@ function ComparisonTab({ planet }: { planet: PlanetData }) {
           <p className="text-[10px] font-bold text-white mt-2">Earth</p>
         </div>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-4">
         {items.map((item) => {
           const v = vals[item.key]
           const e = earth[item.key]
           const max = Math.max(v, e.val)
           return (
-            <div key={item.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-3">
-              <div className="text-[9px] font-body text-white/40 tracking-widest uppercase mb-2">{item.label}</div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <div className="flex items-center gap-1.5 text-left min-w-0">
+            <div key={item.key} className="rounded-lg bg-white/[0.02] border border-white/[0.06] p-4">
+              <div className="text-[9px] font-body text-white/40 tracking-widest uppercase mb-3">{item.label}</div>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2 text-left min-w-0">
                   <div className="w-1.5 h-1.5 rounded-full bg-white/30 shrink-0" />
                   <span className="text-xs text-white/60 truncate">Earth</span>
                   <span className="text-xs font-bold text-white/80">{e.val.toLocaleString()} {e.unit}</span>
                 </div>
                 <span className="text-base font-bold shrink-0" style={{ color: planet.color }}>{ratio(v, e.val)}</span>
-                <div className="flex items-center gap-1.5 text-right min-w-0">
+                <div className="flex items-center gap-2 text-right min-w-0">
                   <span className="text-xs font-bold truncate" style={{ color: planet.color }}>{v.toLocaleString()} {e.unit}</span>
                   <span className="text-xs text-white/60 truncate">{planet.name}</span>
                   <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: planet.color }} />
@@ -128,8 +127,8 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-      <p className="text-[10px] uppercase tracking-wider font-body mb-4 text-white/50">{t('planetDetail.moons.title')}</p>
-      <div className="relative flex items-center justify-center py-8">
+      <p className="text-[10px] uppercase tracking-wider font-body mb-5 text-white/50">{t('planetDetail.moons.title')}</p>
+      <div className="relative flex items-center justify-center py-10">
         <PlanetSVG planetId={planet.id} size={60} animate={false} />
         {planet.mainMoons.map((moon, i) => {
           const dist = 60 + i * 24
@@ -154,9 +153,9 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
           )
         })}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-3">
         {planet.mainMoons.map((moon) => (
-          <div key={moon.name} className="flex items-center justify-between px-4 py-3 rounded-lg bg-white/[0.02] border border-white/[0.06]">
+          <div key={moon.name} className="flex items-center justify-between px-5 py-4 rounded-lg bg-white/[0.02] border border-white/[0.06]">
             <div>
               <p className="text-sm text-white font-body">{moon.name}</p>
               <p className="text-[10px] font-body text-white/50 mt-0.5">{moon.note}</p>
@@ -171,7 +170,6 @@ function MoonsTab({ planet }: { planet: PlanetData }) {
 
 export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
   const { t } = useLanguage()
-  const { lenis } = useLenis()
   const [activeTab, setActiveTab] = useState<'info' | 'compare' | 'moons'>('info')
   const modalRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLElement | null>(null)
@@ -179,50 +177,13 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
 
   useEffect(() => {
     triggerRef.current = document.activeElement as HTMLElement
-    const y = window.scrollY
-    const html = document.documentElement
-    const body = document.body
-
-    if (lenis && typeof (lenis as any).stop === 'function') {
-      ;(lenis as any).stop()
-    }
-
-    const prevHtmlOverflow = html.style.overflow
-    const prevBodyPosition = body.style.position
-    const prevBodyTop = body.style.top
-    const prevBodyWidth = body.style.width
-    const prevBodyOverflow = body.style.overflow
-
-    html.style.overflow = 'hidden'
-    body.style.position = 'fixed'
-    body.style.top = `-${y}px`
-    body.style.width = '100%'
-    body.style.overflow = 'hidden'
-
-    const preventTouch = (e: TouchEvent) => {
-      if (e.cancelable) e.preventDefault()
-    }
-    document.addEventListener('touchmove', preventTouch, { passive: false })
-
+    document.body.style.overflow = 'hidden'
     requestAnimationFrame(() => closeBtnRef.current?.focus())
-
     return () => {
-      if (lenis && typeof (lenis as any).start === 'function') {
-        ;(lenis as any).start()
-      }
-
-      html.style.overflow = prevHtmlOverflow
-      body.style.position = prevBodyPosition
-      body.style.top = prevBodyTop
-      body.style.width = prevBodyWidth
-      body.style.overflow = prevBodyOverflow
-
-      document.removeEventListener('touchmove', preventTouch)
-
-      window.scrollTo(0, y)
+      document.body.style.overflow = ''
       triggerRef.current?.focus()
     }
-  }, [lenis])
+  }, [])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') { e.stopPropagation(); onClose(); return }
@@ -285,8 +246,8 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
             style={{ background: `linear-gradient(90deg, ${planet.color}, ${planet.color}66, transparent)` }}
           />
 
-          <div className="p-6 sm:p-8">
-            <div className="flex items-start justify-between mb-6">
+          <div className="p-8">
+            <div className="flex items-start justify-between mb-8">
               <div className="flex-1 min-w-0 pr-4">
                 <h2 id="planet-detail-title" className="font-heading text-3xl sm:text-4xl font-bold text-white">
                   {planet.name}
@@ -305,7 +266,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
               </button>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-6 mb-6">
+            <div className="flex flex-col sm:flex-row gap-8 mb-8">
               <div className="relative flex items-center justify-center w-full sm:w-[180px] h-[180px] shrink-0 mx-auto sm:mx-0">
                 <div className="w-full h-full">
                   <Planet3D planetId={planet.id} size={180} />
@@ -326,7 +287,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                   <p className="text-sm leading-relaxed font-body text-white/80">
                     {t(`planet.${planet.id}.description`)}
                   </p>
-                  <div className="flex gap-2 mt-4">
+                  <div className="flex gap-3 mt-5">
                     <button
                       onClick={() => { if (typeof navigator !== 'undefined' && navigator.clipboard) navigator.clipboard.writeText(planet.name).catch(() => {}) }}
                       className="px-4 py-2 rounded-lg text-[9px] tracking-wider uppercase font-body transition-colors bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-white/70"
@@ -342,7 +303,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                   </div>
                 </div>
 
-                <div className="flex gap-2 mt-4 border-b border-white/[0.06] pb-3">
+                <div className="flex gap-3 mt-6 border-b border-white/[0.06] pb-4">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
@@ -369,7 +330,7 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {[
                       { label: t('planetDetail.stat.diameter'), value: planet.diameter },
                       { label: t('planetDetail.stat.distance'), value: planet.distanceFromSun },
@@ -380,21 +341,21 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                       { label: t('planetDetail.stat.moons'), value: planet.moons.toString() },
                       { label: t('planetDetail.stat.discovery'), value: planet.discovery.split(' — ')[0] },
                     ].map((s) => (
-                      <div key={s.label} className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                      <div key={s.label} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
                         <p className="text-[9px] uppercase tracking-wider font-body text-white/40">{s.label}</p>
-                        <p className="text-sm text-white/90 mt-1 font-body font-medium">{s.value}</p>
+                        <p className="text-sm text-white/90 mt-1.5 font-body font-medium">{s.value}</p>
                       </div>
                     ))}
                   </div>
 
-                  <div className="mt-5 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                    <p className="text-[9px] uppercase tracking-wider font-body mb-2 text-white/50">{t('planetDetail.atmosphere')}</p>
+                  <div className="mt-8 p-5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-3 text-white/50">{t('planetDetail.atmosphere')}</p>
                     <p className="text-sm font-body text-white/80 leading-relaxed">{planet.atmosphere}</p>
                   </div>
 
-                  <div className="mt-5">
-                    <p className="text-[9px] uppercase tracking-wider font-body mb-3 text-white/50">{t('planetDetail.missions')}</p>
-                    <div className="flex flex-wrap gap-2">
+                  <div className="mt-8">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-4 text-white/50">{t('planetDetail.missions')}</p>
+                    <div className="flex flex-wrap gap-3">
                       {planet.missions.map((m) => (
                         <span key={m} className="px-3 py-1.5 rounded-full text-[10px] font-body bg-white/[0.03] border border-white/[0.06] text-white/70">
                           {m}
@@ -403,11 +364,11 @@ export default function PlanetDetail({ planet, onClose }: PlanetDetailProps) {
                     </div>
                   </div>
 
-                  <div className="mt-5">
-                    <p className="text-[9px] uppercase tracking-wider font-body mb-3 text-white/50">{t('planetDetail.facts')}</p>
-                    <ul className="space-y-2">
+                  <div className="mt-8">
+                    <p className="text-[9px] uppercase tracking-wider font-body mb-4 text-white/50">{t('planetDetail.facts')}</p>
+                    <ul className="space-y-3">
                       {planet.facts.slice(0, 3).map((f, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm font-body text-white/70 leading-relaxed">
+                        <li key={i} className="flex items-start gap-3 text-sm font-body text-white/70 leading-relaxed">
                           <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: planet.color }} />
                           {f}
                         </li>
